@@ -19,7 +19,6 @@ int main() {
     int opt = 1;
     int address_length = sizeof(address);
     char buffer[BUFFERSIZE] = {0};
-    char *hello = "Hello, server is ready";
 
     // Creating socket file descriptor
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
@@ -44,13 +43,20 @@ int main() {
         perror("listen");
         exit(EXIT_FAILURE);
     }
-	if ((new_socket = accept(server_fd, (struct sockaddr *)&address,(socklen_t*)&addrlen))<0) {
-		perror("accept");
-		exit(EXIT_FAILURE);
-	}
+    if ((new_socket = accept(server_fd, (struct sockaddr *)&address,(socklen_t*)&address_length))<0) {
+        perror("accept");
+        exit(EXIT_FAILURE);
+    }
+
+    printf("Client connected to Server. Server is ready to recive client messages!\n");
+    char exit[16] = "/exit";
+
     while(1) {
-        valread = read( new_socket , buffer, BUFFERSIZE);
-        printf("%s\n",buffer );
+        valread = read(new_socket,buffer,BUFFERSIZE);
+        if(strcmp(buffer,exit)) {
+        return 0;
+        }
+        printf("%d\n", new_socket);
     }
     return 0;
 }
