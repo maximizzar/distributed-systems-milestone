@@ -13,7 +13,6 @@
 #define PORT 8080
 
 int main() {
-	struct sockaddr_in address;
 	int sock = 0, valread;
 	struct sockaddr_in address;
 	int address_length = sizeof(address);
@@ -42,7 +41,7 @@ int main() {
         fgets(buffer,BUFFERSIZE, stdin);
 
         send(sock,buffer,BUFFERSIZE,0);
-        printf("Message sent\n");
+        //printf("Message sent\n");
     }
     return 0;
 }
