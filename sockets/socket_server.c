@@ -10,7 +10,7 @@
 #include <time.h>
 #include <string.h>
 
-#define BUFFERSIZE 1
+#define BUFFERSIZE 1024
 #define PORT 8080
 
 int main() {
@@ -48,7 +48,7 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    printf("Client connected to Server. Server is ready to recive client messages!\n");
+    printf("Client connected to Server.\n Server is ready to recive client messages!\n");
 
     while((valread = read(sock,buffer,BUFFERSIZE)) > 0) {
         send(sock,buffer,BUFFERSIZE,0);
