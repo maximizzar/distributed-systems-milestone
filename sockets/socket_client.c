@@ -13,7 +13,7 @@
 #define BUFFERSIZE 1
 #define PORT 8080
 
-# define KIB 1000
+# define KIB 1000.0
 
 int main() {
     int sock = 0, valread;
@@ -51,11 +51,11 @@ int main() {
 
     for(int i = 0; i < 1000; i++) {
         send(sock,buffer,BUFFERSIZE,0);
-        printf("%s%d => ",buffer,i);
+        //printf("%s%d => ",buffer,i);
         memset(buffer,0,BUFFERSIZE);
 
         read(sock,buffer,BUFFERSIZE);
-        printf("%s\n",buffer);
+        //printf("%s\n",buffer);
     }
     gettimeofday(&end,NULL);
     memset(buffer,0,BUFFERSIZE);
@@ -75,20 +75,23 @@ int main() {
 
         for(int j = 0; j < buffer_sizes[i]; j++) {
             send(sock,buffer,buffer_sizes[i],0);
-
+            //printf("%s%d => ",buffer,i);
+            memset(buffer,0,BUFFERSIZE);
 
             read(sock,buffer,buffer_sizes[i]);
+            //printf("%s\n",buffer);
         }
 
         gettimeofday(&end,NULL);
 
+        //calc average bandwidth..
         double bandwidth = buffer_sizes[i] * KIB;
         double time = (end.tv_sec - start.tv_sec) * KIB;
         time += (end.tv_usec - start.tv_usec) / KIB;
         bandwidth = bandwidth/time;
 
-        //print out current bandwidth:
-        printf("%d Kbit/s \n",bandwidth);
+        //print out current average bandwidth!
+        printf("Bandwidth: %f kbit/s \n",bandwidth);
     }
     close(sock);
     return 0;
