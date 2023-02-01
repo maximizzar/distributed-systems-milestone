@@ -10,11 +10,11 @@
 #include <time.h>
 #include <string.h>
 
-#define BUFFERSIZE 1024
+#define BUFFERSIZE 1
 #define PORT 8080
 
 int main() {
-    int server_fd, new_socket, valread;
+    int server_fd, sock, valread;
     struct sockaddr_in address;
     int opt = 1;
     int address_length = sizeof(address);
@@ -43,20 +43,16 @@ int main() {
         perror("listen");
         exit(EXIT_FAILURE);
     }
-    if ((new_socket = accept(server_fd, (struct sockaddr *)&address,(socklen_t*)&address_length))<0) {
+    if ((sock = accept(server_fd, (struct sockaddr *)&address,(socklen_t*)&address_length))<0) {
         perror("accept");
         exit(EXIT_FAILURE);
     }
 
     printf("Client connected to Server. Server is ready to recive client messages!\n");
-    char exit[16] = "/exit";
 
-    while(1) {
-        valread = read(new_socket,buffer,BUFFERSIZE);
-        if(strcmp(buffer,exit)) {
-        return 0;
-        }
-        printf("%d\n", new_socket);
+    while((valread = read(sock,buffer,BUFFERSIZE)) > 0) {
+        send(sock,buffer,BUFFERSIZE,0);
     }
+    close(sock);
     return 0;
 }
