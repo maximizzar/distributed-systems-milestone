@@ -10,7 +10,7 @@
 #include <sys/time.h>
 #include <time.h>
 
-#define BUFFERSIZE 1
+#define BUFFERSIZE 1024
 #define PORT 8080
 
 # define KIB 1000.0
@@ -64,21 +64,22 @@ int main() {
     double latency = (end.tv_sec - start.tv_sec) * 1000.0;
     latency += (end.tv_usec - start.tv_usec) / 1000.0;
     latency = latency/1000;
-    printf("Latency: %f ms\n", latency);
+    printf("Latency: %f ms\n\n", latency);
 
     //start bandwidth measurement..
     int buffer_sizes[15] = {1024, 2048, 4096, 8192, 16384, 32758, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216};
+
 
     for(int i = 0; i < 15; i++) {
         struct timeval start,end;
         gettimeofday(&start,NULL);
 
         for(int j = 0; j < buffer_sizes[i]; j++) {
-            send(sock,buffer,buffer_sizes[i],0);
+            send(sock,buffer,BUFFERSIZE,0);
             //printf("%s%d => ",buffer,i);
             memset(buffer,0,BUFFERSIZE);
 
-            read(sock,buffer,buffer_sizes[i]);
+            read(sock,buffer,BUFFERSIZE);
             //printf("%s\n",buffer);
         }
 
@@ -91,7 +92,7 @@ int main() {
         bandwidth = bandwidth/time;
 
         //print out current average bandwidth!
-        printf("Bandwidth: %f kbit/s \n",bandwidth);
+        printf("%d: Bandwidth: %f kbit/s \n",i,bandwidth);
     }
     close(sock);
     return 0;
