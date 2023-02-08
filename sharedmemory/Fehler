@@ -1,0 +1,3 @@
+1. Bandbreitenberechnung irgendwie falsch.
+2. receiver.c muss vor jedem ausführen im Editor nochmal gespeichert werden, da sonst die strlen vom shm (SharedMemory) nicht 0 ist.
+3. Segmentation fault (core dumped) bei 8 MiB.
