@@ -18,6 +18,7 @@
 #define MIB 1048576
 
 int main(int argc,char* argv[]) {
+
     int sock = 0, valread;
     struct sockaddr_in address;
     int address_length = sizeof(address);
@@ -27,6 +28,7 @@ int main(int argc,char* argv[]) {
         perror("\n Socket creation error \n");
         exit(EXIT_FAILURE);
     }
+
     memset(&address,'0',address_length);
 
     address.sin_family = AF_INET;
@@ -51,8 +53,12 @@ int main(int argc,char* argv[]) {
     gettimeofday(&start,NULL);
 
     for(int i = 0; i < 1000; i++) {
-        send(sock,buffer,BUFFERSIZE,0);
-        read(sock,buffer,BUFFERSIZE);
+        send(sock,buffer,1,0);
+        //printf("%s%d => ",buffer,i);
+        memset(buffer,0,BUFFERSIZE);
+
+        read(sock,buffer,1);
+        //printf("%s\n",buffer);
     }
     gettimeofday(&end,NULL);
     memset(buffer,0,BUFFERSIZE);
@@ -84,7 +90,9 @@ int main(int argc,char* argv[]) {
         bandwidth = bandwidth / time;
 
         //print out current average bandwidth!
-        printf("--> bandwidth: %f KB/s\n",bandwidth);
+        printf("--> bandwidth: %f Mbit/s\n",bandwidth / 128);
+        //KB --> MB = /1024
+        //MB --> Mbit * 8
     }
     close(sock);
     return 0;
