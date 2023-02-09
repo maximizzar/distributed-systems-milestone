@@ -58,13 +58,6 @@ int main()
     /* 1000 mal senden */
     for (int i = 0; i < 1000; i++) {
 
-    /* Warte auf das Semaphore */
-    if (semop(semid, &sem_wait, 1) < 0)
-    {
-        perror("semop wait");
-        return 1;
-    }
-
     /* Sende Byte an den Receiver */
     memcpy(shm, message, 1);
 
@@ -86,13 +79,6 @@ int main()
     char byte;
     while(byte != 'b') {
     memcpy(&byte, shm, 1);
-    }
-
-    /* Signalisiere das Semaphore */
-    if (semop(semid, &sem_signal, 1) < 0)
-    {
-        perror("semop signal");
-        return 1;
     }
     //printf("%d Empfangenes Byte: %c\n",i, byte);
     }
@@ -121,14 +107,7 @@ int main()
     /* 1000 mal senden */
     for (int i = 0; i < 1000; i++) {
 
-    /* Warte auf das Semaphore */
-    if (semop(semid, &sem_wait, 1) < 0)
-    {
-        perror("semop wait");
-        return 1;
-    }
-
-    /* Sende Bytes an den Sender */
+    /* Sende Bytes an den Receiver */
     memset(shm, 'a', dataSize);
     //printf("%d Datasize %d\n", i, dataSize);
 
@@ -149,13 +128,6 @@ int main()
     /* Lies die Byte aus dem Shared Memory */
     memcpy(data, shm, dataSize);
     //printf("%d %c\n", dataSize, data[0]);
-
-    /* Signalisiere das Semaphore */
-    if (semop(semid, &sem_signal, 1) < 0)
-    {
-        perror("semop signal");
-        return 1;
-    }
     //printf("%d %d Empfangenes Byte: %s\n",i, dataSize, data);
     }
 
