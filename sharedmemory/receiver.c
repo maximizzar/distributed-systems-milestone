@@ -56,14 +56,11 @@ int main()
         return 1;
     }
 
-    struct sembuf sem_wait = {0, -1, 0};
-    struct sembuf sem_signal = {0, 1, 0};
-
-    /* malloc allocate one Byte */
-    char *test = (char *) malloc(16777216);
-    //read[0] = 'b';
+    struct sembuf sem_wait = {0, -1, 0}; /* struct für semop warten/schließen */
+    struct sembuf sem_signal = {0, 1, 0}; /* struct für semop signalisieren/öffnen */
 
     int dataSize = 1024;
+    char *data = (char *) malloc(16777216);
 
     while (1)
     {   
@@ -73,16 +70,13 @@ int main()
             perror("semop wait");
             return 1;
         }
-        printf("%ld <- dataSize im SharedMemory\n", strlen(shm));
-        dataSize = strlen(shm);
-        memcpy(test, shm, dataSize);
+        //printf("%ld\n", strlen(shm));
+        dataSize = strlen(shm); 
 
-        /* Lies das Byte aus dem Shared Memory */
-        char byte[dataSize];
-        memcpy(byte, shm, dataSize);
+        /* Lies Bytes aus dem Shared Memory */
+        memcpy(data, shm, dataSize);
 
-        /* Sende das Byte zurück an den Client */
-        //*shm = byte;
+        /* Sende Bytes zurück an den Sender */
         memset(shm, 'b', dataSize);
 
         /* Signalisiere das Semaphore */
@@ -91,11 +85,6 @@ int main()
             perror("semop signal");
             return 1;
         }
-    }
-
-    shmdt(shm); /* Shared Memory von prozess entfernen */
-    shmctl(shmid, IPC_RMID, NULL); /* Shared Memory löschen */
-    semctl(semid, 0, IPC_RMID); /* Semaphore löschen */
-
+    }  
     return 0;
 }
