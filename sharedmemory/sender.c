@@ -167,10 +167,9 @@ int main()
     time += (end.tv_usec - start.tv_usec) / ((double) 1e6); /* mikrosekunden in sekunden umrechnen */
     double bandwidth;
     bandwidth = dataSize / time;
-    bandwidth /= 1000; /* Durchschnittliche Bandbreite für eine Messung */
-    printf("Zeit: %fs Bandbreite: %.2fKB/s Bytes: %d\n", time, bandwidth, dataSize);
+    printf("Zeit: %fs Bandbreite: %.2fKB/s / %.2fMB/s Bytes: %d\n", time, bandwidth, bandwidth / 1000, dataSize);
 
-    dataSize *= 2;
+    dataSize *= 2; /* dataSize für nächsten Durchgang verdoppeln */
     }
     shmdt(shm); /* Shared Memory von prozess entfernen */
     shmctl(shmid, IPC_RMID, NULL); /* Shared Memory löschen */
