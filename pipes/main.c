@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
         //Durchschnittliche Latenzzeit berechnen
         double latency = (end.tv_sec - start.tv_sec) * 1000.0;
         latency += (end.tv_usec - start.tv_usec) / 1000.0;
-
+        latency = latency / 1000.0; //ms
         //Ausgabe der Latenz
         printf("Latency: %f ms\n", latency);
 
@@ -88,7 +88,6 @@ int main(int argc, char *argv[])
             write(pipe_des2[1], message, 1);
         }
         printf("Child hat 1000 mal 1 Byte gesendet und empfangen, das gegebene Byte: %c\n", message[0]);
-
         //Zoitmessung
         struct timeval start, end;
         //Startzeit
@@ -98,25 +97,25 @@ int main(int argc, char *argv[])
             int g = i;
             //Malloc
             char *buffer = (char *) malloc (g);
-            //printf("I = %d\n", i);
+            //printf("I = %d\n", i); //zum debugging
 
             //Die Datenmenge senden
             for (int j = 1; j <= g; j= j + KIB) {
                 write(pipe_des2[1], buffer, g);
                 read(pipe_des[0], buffer, g);
-//              printf("j = %d\n", j);
+                // printf("j = %d\n", j); //zum debugging
             }
             gettimeofday(&end, NULL);
 
             //Durchschnittliche Bandbreite berechnen
             double time = (end.tv_sec - start.tv_sec) * 1000.0;
             time += (end.tv_usec - start.tv_usec) / 1000.0;
-            printf("Zeit: %f\n", time);
+            //printf("Zeit: %f\n", time); //zum debugging
             double bandwidth = i;   //kb
             bandwidth = bandwidth / time;
 
             //Ausgabe der Bandbreite
-            printf("ByteSize: %d KiB, Bandwidth: %f Kbit/s, %f MBit/s\n", i/1024, bandwidth, bandwidth / 128);
+            printf("ByteSize: %d KiB, Blocksize: %d, Bandwidth: %f Kbit/s, %f MBit/s\n", i/1024, KIB, bandwidth, bandwidth / 128);
             //KB --> MB = /1024
             //MB --> MBit * 8
             free(buffer);
@@ -130,3 +129,5 @@ int main(int argc, char *argv[])
     }
     return 0;
 }
+
+
